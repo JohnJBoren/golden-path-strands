@@ -1,3 +1,23 @@
-model_provider: stub
+model_provider: ollama
 telemetry_endpoint: http://localhost:4318
 data_dir: data
+
+# Ollama Configuration
+ollama_host: http://localhost:11434
+ollama_model: gpt-oss:20b
+
+# Agent Configuration
+default_temperature: 0.7
+max_tokens: 4096
+
+# Evaluation Configuration
+min_success_score: 0.8
+evaluation_threshold: 0.85
+iterations: 3
+
+# Logging
+log_level: INFO
+log_dir: logs
+
+# Dataset
+dataset_dir: datasets
