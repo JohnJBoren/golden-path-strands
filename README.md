@@ -4,6 +4,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![AWS Strands](https://img.shields.io/badge/AWS-Strands-orange.svg)](https://github.com/strands-agents/sdk-python)
 [![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-green.svg)](https://opentelemetry.io/)
+[![CI](https://github.com/JohnJBoren/golden-path-strands/actions/workflows/ci.yml/badge.svg)](https://github.com/JohnJBoren/golden-path-strands/actions/workflows/ci.yml)
 
 > **Transform expensive AI agent explorations into efficient, production-ready systems through systematic optimization**
 

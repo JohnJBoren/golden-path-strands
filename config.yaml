@@ -1,0 +1,3 @@
+model_provider: stub
+telemetry_endpoint: http://localhost:4318
+data_dir: data
