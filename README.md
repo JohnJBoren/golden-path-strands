@@ -1,23 +1,26 @@
-# 🚀 Golden Path Strands Framework
+# 🚀 Golden Path Framework
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![AWS Strands](https://img.shields.io/badge/AWS-Strands-orange.svg)](https://github.com/strands-agents/sdk-python)
 [![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-green.svg)](https://opentelemetry.io/)
-[![CI](https://github.com/JohnJBoren/golden-path-strands/actions/workflows/ci.yml/badge.svg)](https://github.com/JohnJBoren/golden-path-strands/actions/workflows/ci.yml)
+
+<div align="center">
+  <img src="docs/images/carve-the-channel.png" alt="Golden Path - Carve the Channel" width="600">
+  <p><em>Reinforcing successful decisions to create reliable automation</em></p>
+</div>
 
 > **A systematic framework for transforming expensive, exploratory AI agent behaviors into reliable, efficient, and cost-effective production systems through iterative discovery, evaluation, and distillation.**
 
 ## 📊 Executive Summary
 
-The Golden Path Strands framework addresses the fundamental challenge of deploying frontier AI models in production: the economic and operational infeasibility of using powerful but expensive models like GPT-4 for high-volume workflows. This implementation provides a systematic three-phase methodology that achieves:
+The Golden Path framework addresses the fundamental challenge of deploying frontier AI models in production: the economic and operational infeasibility of using powerful but expensive models for high-volume workflows. This implementation provides a systematic three-phase methodology that achieves:
 
 - **98% reduction in operational costs**
 - **95% reduction in latency for common workflows**
 - **Maintained accuracy and reliability through hybrid architecture**
 - **Continuous adaptation to distribution shift**
 
-Built on AWS Strands and grounded in robust theoretical foundations from reinforcement learning, process mining, and imitation learning, this framework transforms AI agent development from ad-hoc experimentation into a mature engineering discipline.
+Built on robust theoretical foundations from reinforcement learning, process mining, and imitation learning, this framework transforms AI agent development from ad-hoc experimentation into a mature engineering discipline.
 
 ## 🌟 Key Features
 
@@ -82,22 +85,22 @@ Instead of forcing a single agent to balance exploration and exploitation, the f
 ### Standard Installation
 
 ```bash
-pip install golden-path-strands
+pip install golden-path
 ```
 
 ### Development Installation
 
 ```bash
-git clone https://github.com/JohnJBoren/golden-path-strands.git
-cd golden-path-strands
+git clone https://github.com/JohnJBoren/golden-path.git
+cd golden-path
 pip install -e ".[dev]"
 ```
 
 ### Docker Installation
 
 ```bash
-docker pull johnjboren/golden-path-strands:latest
-docker run -p 8080:8080 johnjboren/golden-path-strands
+docker pull johnjboren/golden-path:latest
+docker run -p 8080:8080 johnjboren/golden-path
 ```
 
 ## 🔄 The Three-Phase Methodology
@@ -268,11 +271,11 @@ deployment = HybridDeployment(
 
 ```python
 import asyncio
-from golden_path import GoldenPathStrands
+from golden_path import GoldenPath
 
 async def main():
     # Initialize framework
-    gps = GoldenPathStrands(
+    gp = GoldenPath(
         config_file="config.yaml",
         monitoring_enabled=True
     )
@@ -285,28 +288,28 @@ async def main():
     ]
     
     # Phase 1: Exploration
-    exploration_results = await gps.explore(
+    exploration_results = await gp.explore(
         workflows=workflows,
         sample_size=10000,
         model="gpt-4-turbo"
     )
     
     # Phase 2: Evaluation
-    golden_paths = await gps.evaluate(
+    golden_paths = await gp.evaluate(
         paths=exploration_results,
         min_score=0.85,
         consensus_required=0.75
     )
     
     # Phase 3: Distillation
-    specialized_agent = await gps.distill(
+    specialized_agent = await gp.distill(
         golden_paths=golden_paths,
         base_model="mistral-7b",
         optimization_method="dpo"
     )
     
     # Deploy hybrid system
-    deployment = await gps.deploy(
+    deployment = await gp.deploy(
         specialized_agent=specialized_agent,
         fallback_model="gpt-4-turbo",
         monitoring_endpoint="http://localhost:4317"
@@ -519,12 +522,12 @@ optimal_architecture = nas.search(
 
 ### Core Classes
 
-#### `GoldenPathStrands`
+#### `GoldenPath`
 
 Main orchestrator for the complete pipeline.
 
 ```python
-class GoldenPathStrands:
+class GoldenPath:
     def __init__(self, config: Dict = None)
     async def explore(self, workflows: List[str], sample_size: int = 10000)
     async def evaluate(self, paths: List[Dict], min_score: float = 0.85)
@@ -565,8 +568,8 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone and setup
-git clone https://github.com/JohnJBoren/golden-path-strands.git
-cd golden-path-strands
+git clone https://github.com/JohnJBoren/golden-path.git
+cd golden-path
 
 # Create virtual environment
 python -m venv venv
@@ -602,22 +605,14 @@ The Golden Path methodology is grounded in extensive research:
 4. Ross, S., Gordon, G., & Bagnell, D. (2011). A reduction of imitation learning and structured prediction
 5. Rafailov, R., et al. (2023). Direct Preference Optimization: Your Language Model is Secretly a Reward Model
 
-## 🙏 Acknowledgments
-
-- AWS Strands team for the agent framework foundation
-- OpenAI, Anthropic, Google, and Mistral for model access
-- The open-source ML community for continuous innovation
-- Early adopters and contributors
-
 ## 📬 Contact
 
-- GitHub Issues: [Report bugs](https://github.com/JohnJBoren/golden-path-strands/issues)
-- Discussions: [Ask questions](https://github.com/JohnJBoren/golden-path-strands/discussions)
-- Email: golden-path@johnjboren.dev
+- GitHub Issues: [Report bugs](https://github.com/JohnJBoren/golden-path/issues)
+- Discussions: [Ask questions](https://github.com/JohnJBoren/golden-path/discussions)
 
 ---
 
 <p align="center">
   <strong>Transforming AI exploration into production excellence</strong><br>
-  Built with ❤️ for the AI engineering community
+  Built for the AI engineering community
 </p>
