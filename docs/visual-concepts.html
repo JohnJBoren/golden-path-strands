@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Path: Visual Concepts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #001f26 0%, #003B46 100%);
+            min-height: 100vh;
+        }
+        .poster {
+            background: linear-gradient(135deg, #07575B 0%, #003B46 100%);
+            aspect-ratio: 2 / 3;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .poster:hover {
+            transform: scale(1.03);
+            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+        .poster-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .golden-path {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .chaos-lines {
+            stroke: rgba(102, 165, 173, 0.3);
+            stroke-width: 0.5;
+            fill: none;
+        }
+        .golden-line {
+            stroke: #FFD700;
+            stroke-width: 3;
+            fill: none;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.9)); }
+        }
+        .brain-icon {
+            width: 150px;
+            height: 150px;
+            position: relative;
+        }
+        .arrow-icon {
+            width: 100px;
+            height: 100px;
+            animation: slide 3s ease-in-out infinite;
+        }
+        @keyframes slide {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+        .plinko-peg {
+            fill: rgba(196, 223, 230, 0.3);
+            transition: fill 0.3s ease;
+        }
+        .plinko-peg.active {
+            fill: #FFD700;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-black text-white">Golden Path</h1>
+            <p class="text-xl md:text-2xl text-[#C4DFE6] mt-2">Visual Concepts & Designs</p>
+            <p class="text-sm text-[#66A5AD] mt-4">Interactive visualization of the three-phase methodology</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+            
+            <!-- Poster 1: Chaos to Clarity -->
+            <div class="flex flex-col items-center">
+                <div class="poster w-full max-w-md rounded-lg">
+                    <svg class="golden-path" viewBox="0 0 400 600">
+                        <!-- Chaos lines -->
+                        <g id="chaos">
+                            <path class="chaos-lines" d="M50,50 Q200,100 350,150 T300,250 Q150,300 50,400 T250,500 Q350,550 300,600"/>
+                            <path class="chaos-lines" d="M100,0 Q150,100 200,200 T250,300 Q200,400 150,500 T200,600"/>
+                            <path class="chaos-lines" d="M0,100 Q100,150 200,100 T300,200 Q250,300 200,400 T350,500"/>
+                            <path class="chaos-lines" d="M350,0 Q300,100 250,150 T200,250 Q150,350 100,450 T50,550"/>
+                            <path class="chaos-lines" d="M150,0 Q200,50 250,100 T300,200 Q250,300 200,400 T150,600"/>
+                            <path class="chaos-lines" d="M0,200 Q100,250 200,200 T300,300 Q250,400 150,450 T100,600"/>
+                        </g>
+                        <!-- Golden path -->
+                        <path class="golden-line" d="M50,50 Q200,200 350,550" stroke-dasharray="1000" stroke-dashoffset="1000">
+                            <animate attributeName="stroke-dashoffset" from="1000" to="0" dur="3s" fill="freeze"/>
+                        </path>
+                    </svg>
+                    <div class="poster-content">
+                        <div class="text-center text-white/20 text-6xl font-black">
+                            EXPLORE
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <h2 class="text-2xl font-bold">Chaos to Clarity</h2>
+                    <p class="text-[#66A5AD]">Finding the optimal path through a complex decision space.</p>
+                </div>
+            </div>
+
+            <!-- Poster 2: Explore vs Execute -->
+            <div class="flex flex-col items-center">
+                <div class="poster w-full max-w-md rounded-lg">
+                    <div class="poster-content">
+                        <div class="flex w-full h-full">
+                            <!-- Left side: Complex -->
+                            <div class="w-1/2 flex flex-col items-center justify-center border-r border-white/10">
+                                <svg class="brain-icon" viewBox="0 0 100 100">
+                                    <circle cx="30" cy="30" r="15" fill="none" stroke="#66A5AD" stroke-width="1"/>
+                                    <circle cx="70" cy="30" r="15" fill="none" stroke="#66A5AD" stroke-width="1"/>
+                                    <circle cx="30" cy="70" r="15" fill="none" stroke="#66A5AD" stroke-width="1"/>
+                                    <circle cx="70" cy="70" r="15" fill="none" stroke="#66A5AD" stroke-width="1"/>
+                                    <circle cx="50" cy="50" r="20" fill="none" stroke="#C4DFE6" stroke-width="2"/>
+                                    <line x1="30" y1="30" x2="70" y2="30" stroke="#66A5AD" stroke-width="0.5"/>
+                                    <line x1="30" y1="30" x2="30" y2="70" stroke="#66A5AD" stroke-width="0.5"/>
+                                    <line x1="70" y1="30" x2="70" y2="70" stroke="#66A5AD" stroke-width="0.5"/>
+                                    <line x1="30" y1="70" x2="70" y2="70" stroke="#66A5AD" stroke-width="0.5"/>
+                                    <line x1="30" y1="30" x2="70" y2="70" stroke="#66A5AD" stroke-width="0.5"/>
+                                    <line x1="70" y1="30" x2="30" y2="70" stroke="#66A5AD" stroke-width="0.5"/>
+                                </svg>
+                                <p class="text-xs mt-4 text-[#66A5AD]">FRONTIER</p>
+                            </div>
+                            <!-- Right side: Simple -->
+                            <div class="w-1/2 flex flex-col items-center justify-center">
+                                <svg class="arrow-icon" viewBox="0 0 100 50">
+                                    <path d="M10,25 L70,25 L60,15 M70,25 L60,35" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <p class="text-xs mt-4 text-[#FFD700]">DISTILLED</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-8 left-0 right-0 text-center text-white/20 text-4xl font-black">
+                            EVALUATE
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <h2 class="text-2xl font-bold">Explore vs. Execute</h2>
+                    <p class="text-[#66A5AD]">Contrasting the powerful frontier model with the efficient distilled model.</p>
+                </div>
+            </div>
+
+            <!-- Poster 3: Carve the Channel -->
+            <div class="flex flex-col items-center">
+                <div class="poster w-full max-w-md rounded-lg">
+                    <svg class="golden-path" viewBox="0 0 400 600">
+                        <!-- Plinko board -->
+                        <g id="plinko-board">
+                            <!-- Pegs -->
+                            <circle class="plinko-peg" cx="200" cy="100" r="5"/>
+                            <circle class="plinko-peg" cx="150" cy="150" r="5"/>
+                            <circle class="plinko-peg" cx="250" cy="150" r="5"/>
+                            <circle class="plinko-peg" cx="100" cy="200" r="5"/>
+                            <circle class="plinko-peg active" cx="200" cy="200" r="5"/>
+                            <circle class="plinko-peg" cx="300" cy="200" r="5"/>
+                            <circle class="plinko-peg" cx="150" cy="250" r="5"/>
+                            <circle class="plinko-peg active" cx="250" cy="250" r="5"/>
+                            <circle class="plinko-peg" cx="100" cy="300" r="5"/>
+                            <circle class="plinko-peg" cx="200" cy="300" r="5"/>
+                            <circle class="plinko-peg active" cx="300" cy="300" r="5"/>
+                            <circle class="plinko-peg" cx="50" cy="350" r="5"/>
+                            <circle class="plinko-peg" cx="150" cy="350" r="5"/>
+                            <circle class="plinko-peg" cx="250" cy="350" r="5"/>
+                            <circle class="plinko-peg active" cx="350" cy="350" r="5"/>
+                            <circle class="plinko-peg" cx="100" cy="400" r="5"/>
+                            <circle class="plinko-peg" cx="200" cy="400" r="5"/>
+                            <circle class="plinko-peg active" cx="300" cy="400" r="5"/>
+                            <circle class="plinko-peg" cx="150" cy="450" r="5"/>
+                            <circle class="plinko-peg active" cx="250" cy="450" r="5"/>
+                        </g>
+                        <!-- Golden path through pegs -->
+                        <path class="golden-line" d="M200,50 L200,100 L200,200 L250,250 L300,300 L350,350 L300,400 L250,450 L250,550" stroke-dasharray="800" stroke-dashoffset="800">
+                            <animate attributeName="stroke-dashoffset" from="800" to="0" dur="4s" fill="freeze" repeatCount="indefinite"/>
+                        </path>
+                        <!-- Target slot -->
+                        <rect x="230" y="550" width="40" height="30" fill="#FFD700" opacity="0.8"/>
+                    </svg>
+                    <div class="poster-content">
+                        <div class="text-center text-white/20 text-6xl font-black">
+                            DISTILL
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <h2 class="text-2xl font-bold">Carve the Channel</h2>
+                    <p class="text-[#66A5AD]">Reinforcing successful decisions to create reliable automation.</p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="mt-16 text-center">
+            <h3 class="text-2xl font-bold mb-6">The Golden Path Process</h3>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto bg-[#07575B] rounded-full flex items-center justify-center">
+                        <span class="text-2xl font-bold">1</span>
+                    </div>
+                    <p class="mt-2 font-semibold">Explore</p>
+                    <p class="text-sm text-[#66A5AD]">Discover paths</p>
+                </div>
+                <div class="hidden md:block text-4xl text-[#66A5AD]">→</div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto bg-[#07575B] rounded-full flex items-center justify-center">
+                        <span class="text-2xl font-bold">2</span>
+                    </div>
+                    <p class="mt-2 font-semibold">Evaluate</p>
+                    <p class="text-sm text-[#66A5AD]">Identify golden paths</p>
+                </div>
+                <div class="hidden md:block text-4xl text-[#66A5AD]">→</div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto bg-[#FFD700] rounded-full flex items-center justify-center">
+                        <span class="text-2xl font-bold text-[#003B46]">3</span>
+                    </div>
+                    <p class="mt-2 font-semibold">Distill</p>
+                    <p class="text-sm text-[#66A5AD]">Deploy efficient model</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-16 text-center text-[#66A5AD]">
+            <p>© 2025 Golden Path Framework | Transform exploration into production excellence</p>
+        </footer>
+    </div>
+
+</body>
+</html>
