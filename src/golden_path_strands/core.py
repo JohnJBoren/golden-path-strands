@@ -25,16 +25,21 @@ class GoldenPathStrands:
             Optional configuration dictionary. If ``None`` a configuration file and
             environment variables will be consulted.
         """
-        self.config = config or load_config()
+        if config is None:
+            settings = load_config()
+            self.config = settings.to_dict()
+        else:
+            self.config = config
+
         self.logger = ExplorationLogger()
         self.evaluator = LLMJudgeEvaluator()
         self.dataset_creator = DatasetCreator()
-        
+
         # Initialize Ollama provider
         ollama_host = self.config.get("ollama_host", "http://localhost:11434")
         ollama_model = self.config.get("ollama_model", "gpt-oss:20b")
         self.ollama_provider = OllamaProvider(host=ollama_host, model=ollama_model)
-        
+
         # Initialize agent orchestrator
         self.agent_orchestrator = AgentOrchestrator(
             ollama_host=ollama_host,
@@ -102,8 +107,19 @@ class GoldenPathStrands:
         """
         return self.dataset_creator.write_paths(paths)
 
-    async def run_complete_pipeline(self, tasks: List[str]) -> str:
+    async def run_complete_pipeline(self, tasks: List[str]) -> Dict[str, Any]:
         """Execute exploration, evaluation and dataset creation end-to-end."""
         paths = await self.discover_golden_paths(tasks)
         dataset_path = await self.create_training_dataset(paths)
-        return dataset_path
+
+        # Calculate statistics for the return value
+        total_score = sum(p.get("score", 0) for p in paths)
+        avg_score = total_score / len(paths) if paths else 0
+
+        return {
+            "tasks_completed": len(tasks),
+            "discovered_paths": len(paths),
+            "average_score": avg_score,
+            "dataset_path": dataset_path,
+            "paths": paths
+        }

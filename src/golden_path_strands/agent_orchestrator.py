@@ -25,7 +25,7 @@ class Agent:
         name: str,
         agent_type: AgentType,
         provider: OllamaProvider,
-        system_prompt: str = None
+        system_prompt: Optional[str] = None
     ):
         self.name = name
         self.agent_type = agent_type
@@ -68,19 +68,23 @@ class Agent:
     def _build_prompt(self, task: str, context: Optional[Dict]) -> str:
         """Build prompt with context"""
         prompt_parts = [f"Task: {task}"]
-        
+
         if context:
-            if "previous_results" in context:
+            if "previous_results" in context and context.get("previous_results"):
                 prompt_parts.append("\nPrevious Results:")
-                for prev in context["previous_results"]:
-                    prompt_parts.append(f"- {prev.get('agent', 'Unknown')}: {prev.get('response', '')[:200]}...")
-            
-            if "requirements" in context:
-                prompt_parts.append(f"\nRequirements: {context['requirements']}")
-            
-            if "constraints" in context:
-                prompt_parts.append(f"\nConstraints: {context['constraints']}")
-        
+                for prev in context.get("previous_results", []):
+                    response = prev.get('response', '')
+                    if response:
+                        prompt_parts.append(f"- {prev.get('agent', 'Unknown')}: {response[:200]}...")
+                    else:
+                        prompt_parts.append(f"- {prev.get('agent', 'Unknown')}: <no response>")
+
+            if context.get("requirements"):
+                prompt_parts.append(f"\nRequirements: {context.get('requirements')}")
+
+            if context.get("constraints"):
+                prompt_parts.append(f"\nConstraints: {context.get('constraints')}")
+
         return "\n".join(prompt_parts)
 
 
@@ -137,19 +141,27 @@ class AgentOrchestrator:
     ) -> List[Dict[str, Any]]:
         """Execute multiple tasks in parallel"""
         async_tasks = []
-        
+
         for task_spec in tasks:
-            agent_name = task_spec["agent"]
-            task = task_spec["task"]
+            agent_name = task_spec.get("agent")
+            task = task_spec.get("task")
+
+            if not agent_name or not task:
+                logger.warning("Skipping task spec missing agent or task", spec=task_spec)
+                continue
+
             context = task_spec.get("context")
-            
+
             if agent_name in self.agents:
                 async_tasks.append(
                     self.execute_single(agent_name, task, context)
                 )
-        
-        results = await asyncio.gather(*async_tasks)
-        return results
+            else:
+                logger.warning(f"Agent {agent_name} not found, skipping task")
+
+        results = await asyncio.gather(*async_tasks, return_exceptions=True)
+        # Filter out exceptions from results
+        return [r for r in results if not isinstance(r, Exception)]
     
     async def execute_sequential(
         self,
@@ -158,23 +170,38 @@ class AgentOrchestrator:
         """Execute tasks sequentially, passing results forward"""
         results = []
         context = {"previous_results": []}
-        
+
         for step in workflow:
-            agent_name = step["agent"]
-            task = step["task"]
-            
+            agent_name = step.get("agent")
+            task = step.get("task")
+
+            if not agent_name or not task:
+                logger.warning("Skipping workflow step missing agent or task", step=step)
+                continue
+
             # Add previous results to context
             step_context = {**context, **step.get("context", {})}
-            
-            result = await self.execute_single(agent_name, task, step_context)
-            results.append(result)
-            
-            # Update context with latest result
-            context["previous_results"].append({
-                "agent": agent_name,
-                "response": result["response"]
-            })
-        
+
+            try:
+                result = await self.execute_single(agent_name, task, step_context)
+                results.append(result)
+
+                # Update context with latest result
+                context["previous_results"].append({
+                    "agent": agent_name,
+                    "response": result.get("response", "")
+                })
+            except Exception as e:
+                logger.error(f"Error executing step for agent {agent_name}: {e}")
+                # Add error result but continue workflow
+                error_result = {
+                    "agent": agent_name,
+                    "task": task,
+                    "response": f"Error: {str(e)}",
+                    "error": True
+                }
+                results.append(error_result)
+
         return results
     
     async def execute_research_workflow(
@@ -210,7 +237,7 @@ class AgentOrchestrator:
             "topic": topic,
             "workflow": "research",
             "results": results,
-            "summary": results[-1]["response"] if results else "",
+            "summary": results[-1].get("response", "") if results else "",
         }
     
     async def execute_coding_workflow(
@@ -250,10 +277,12 @@ class AgentOrchestrator:
         code = ""
         tests = ""
         for result in results:
-            if result["agent"] == "coder" and "```" in result["response"]:
-                code = result["response"]
-            elif result["agent"] == "tester" and "```" in result["response"]:
-                tests = result["response"]
+            agent_name = result.get("agent", "")
+            response = result.get("response", "")
+            if agent_name == "coder" and "```" in response:
+                code = response
+            elif agent_name == "tester" and "```" in response:
+                tests = response
         
         return {
             "requirements": requirements,
@@ -298,7 +327,7 @@ class AgentOrchestrator:
             "analysis_type": analysis_type,
             "workflow": "analysis",
             "results": results,
-            "insights": results[-1]["response"] if results else "",
+            "insights": results[-1].get("response", "") if results else "",
         }
     
     def register_custom_workflow(

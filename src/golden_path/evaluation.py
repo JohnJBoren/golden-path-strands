@@ -171,8 +171,8 @@ Provide your evaluation in the following JSON format:
         if json_match:
             try:
                 return json.loads(json_match.group())
-            except json.JSONDecodeError:
-                pass
+            except json.JSONDecodeError as e:
+                logger.debug("json_parse_failed", error=str(e), response_snippet=response_text[:100])
         
         # Fallback: extract scores using patterns
         scores = {}
@@ -182,7 +182,8 @@ Provide your evaluation in the following JSON format:
         for criterion, score in matches:
             try:
                 scores[criterion.lower()] = float(score)
-            except ValueError:
+            except ValueError as e:
+                logger.debug("score_parse_failed", criterion=criterion, score=score, error=str(e))
                 continue
         
         # Calculate overall if not present

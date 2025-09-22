@@ -91,9 +91,10 @@ class GoldenPathStrands:
         
         # Calculate average score
         if results["successful_paths"]:
-            results["average_score"] = sum(
-                p["score"] for p in results["successful_paths"]
-            ) / len(results["successful_paths"])
+            results["average_score"] = (
+                sum(p["score"] for p in results["successful_paths"]) / len(results["successful_paths"])
+                if results["successful_paths"] else 0
+            )
         
         self.discovered_paths = results["successful_paths"]
         return results
@@ -152,8 +153,12 @@ Provide a comprehensive solution with clear reasoning at each decision point.
             logger.warning("no_paths_available")
             return ""
         
+        # Ensure datasets directory exists
+        import os
+        os.makedirs("datasets", exist_ok=True)
+
         dataset_path = f"datasets/golden_paths_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl"
-        
+
         with open(dataset_path, 'w') as f:
             for path in paths:
                 training_example = {

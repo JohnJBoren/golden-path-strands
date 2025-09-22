@@ -13,8 +13,23 @@ class DatasetCreator:
         self.output_path = Path(output_path or "dataset.jsonl")
 
     def write_paths(self, paths: List[Dict[str, Any]]) -> str:
-        self.output_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.output_path.open("w", encoding="utf8") as fh:
-            for path in paths:
-                fh.write(json.dumps(path) + "\n")
-        return str(self.output_path)
+        """Write paths to JSONL file with proper error handling."""
+        temp_path = None
+        try:
+            self.output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Write to temporary file first to ensure atomicity
+            temp_path = self.output_path.with_suffix('.tmp')
+            with temp_path.open("w", encoding="utf8") as fh:
+                for path in paths:
+                    fh.write(json.dumps(path) + "\n")
+
+            # Move temp file to final location
+            temp_path.replace(self.output_path)
+            return str(self.output_path)
+
+        except Exception as e:
+            # Clean up temp file if it exists
+            if temp_path is not None and temp_path.exists():
+                temp_path.unlink()
+            raise RuntimeError(f"Failed to write dataset: {e}") from e

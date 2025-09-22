@@ -103,7 +103,76 @@ docker pull johnjboren/golden-path:latest
 docker run -p 8080:8080 johnjboren/golden-path
 ```
 
+## 🔗 AWS Strands Agents SDK Integration
+
+The Golden Path framework now includes deep integration with AWS Strands Agents SDK for production-grade telemetry and agent orchestration:
+
+```mermaid
+graph LR
+    SA[Strands Agent] --> ST[Strands Telemetry]
+    ST --> OT[OpenTelemetry Collector]
+    OT --> GP[GoldenPath Processor]
+    GP --> JW[JSONL Writer]
+    JW --> PM[Process Miner]
+    PM --> DS[Training Dataset]
+    DS --> DPO[DPO Training]
+    DPO --> FM[Fine-tuned Model]
+```
+
+### Key Integration Features
+
+- **Automatic Trace Capture**: Strands telemetry feeds directly into Golden Path datamining
+- **Real-time JSONL Streaming**: Agent decisions logged in structured format for analysis
+- **Pattern Discovery**: Process mining identifies optimal agent behaviors
+- **DPO Dataset Generation**: Automatic preference pair creation from traces
+
+### Quick Start with Strands SDK
+
+```python
+from golden_path_strands.strands_telemetry import StrandsTelemetryIntegration
+from strands import Agent
+
+# Setup telemetry integration
+telemetry = StrandsTelemetryIntegration(output_dir="datasets/traces")
+telemetry.setup_with_strands()
+
+# Create Strands agent - traces automatically captured
+agent = Agent(model="gpt-4", tools=[...])
+result = await agent.run("Your query")
+
+# Mine patterns from captured traces
+from golden_path_strands.process_miner import ProcessMiner
+miner = ProcessMiner()
+miner.load_traces_from_directory("datasets/traces")
+patterns = miner.discover_patterns()
+dpo_pairs = miner.generate_preference_pairs()
+```
+
 ## 🔄 The Three-Phase Methodology
+
+```mermaid
+graph TB
+    subgraph "Phase 1: Exploration"
+        E1[Deploy Frontier Models] --> E2[Log Decision Points]
+        E2 --> E3[Capture Reasoning]
+        E3 --> E4[Stream to JSONL]
+    end
+
+    subgraph "Phase 2: Evaluation"
+        V1[Multi-Criteria Scoring] --> V2[Bias Mitigation]
+        V2 --> V3[Identify Golden Paths]
+    end
+
+    subgraph "Phase 3: Distillation"
+        D1[Process Mining] --> D2[Generate Preference Pairs]
+        D2 --> D3[DPO Training]
+        D3 --> D4[Deploy Specialized Model]
+    end
+
+    E4 --> V1
+    V3 --> D1
+    D4 --> P[Production System]
+```
 
 ### Phase I: Exploration and Process Discovery
 
@@ -222,6 +291,32 @@ specialized_model = trainer.train(
 ```
 
 ## 🏗️ Architecture
+
+### Data Mining Pipeline
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant Telemetry
+    participant JSONLWriter
+    participant ProcessMiner
+    participant DPOTrainer
+
+    User->>Agent: Query
+    Agent->>Agent: Execute with tools
+    Agent->>Telemetry: Emit traces
+    Telemetry->>JSONLWriter: Stream decision points
+    JSONLWriter->>JSONLWriter: Buffer & compress
+    Agent->>User: Response
+
+    Note over ProcessMiner: Async processing
+    JSONLWriter->>ProcessMiner: Load traces
+    ProcessMiner->>ProcessMiner: Discover patterns
+    ProcessMiner->>ProcessMiner: Identify bottlenecks
+    ProcessMiner->>DPOTrainer: Generate preference pairs
+    DPOTrainer->>DPOTrainer: Fine-tune model
+```
 
 ### Hybrid Production System
 

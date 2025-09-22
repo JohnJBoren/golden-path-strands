@@ -8,7 +8,7 @@ from typing import Any, Dict
 
 try:  # pragma: no cover - optional dependency
     import yaml
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     yaml = None
 
 
@@ -18,6 +18,17 @@ class Settings:
     telemetry_endpoint: str | None = None
     data_dir: str = "data"
     extra: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert Settings object to dictionary for compatibility."""
+        result = {
+            "model_provider": self.model_provider,
+            "telemetry_endpoint": self.telemetry_endpoint,
+            "data_dir": self.data_dir,
+        }
+        # Add extra fields directly to the result
+        result.update(self.extra)
+        return result
 
 
 def load_config(path: str = "config.yaml") -> Settings:
@@ -31,9 +42,19 @@ def load_config(path: str = "config.yaml") -> Settings:
         with open(path, "r", encoding="utf8") as fh:
             text = fh.read()
             if yaml is not None:
-                config = yaml.safe_load(text) or {}
+                try:
+                    config = yaml.safe_load(text) or {}
+                except yaml.YAMLError as e:
+                    # If YAML parsing fails, try JSON as fallback
+                    try:
+                        config = json.loads(text or "{}")
+                    except json.JSONDecodeError:
+                        raise ValueError(f"Failed to parse config file as YAML or JSON: {e}")
             else:
-                config = json.loads(text or "{}")
+                try:
+                    config = json.loads(text or "{}")
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"Failed to parse config file as JSON (PyYAML not installed): {e}")
     prefix = "GPS_"
     env_overrides = {k[len(prefix):].lower(): v for k, v in os.environ.items() if k.startswith(prefix)}
     config.update(env_overrides)

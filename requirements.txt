@@ -4,9 +4,12 @@ openai>=1.58.1
 python-dotenv>=1.0.0
 pydantic>=2.0.0
 pyyaml
-asyncio>=3.4.3
 aiohttp>=3.9.0
 requests>=2.32.0
+
+# AWS Strands Agents SDK
+strands-agents>=1.0.0
+strands-agents-tools>=0.1.0
 
 # Agent framework
 langchain>=0.2.0

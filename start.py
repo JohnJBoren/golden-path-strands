@@ -360,7 +360,17 @@ def main(mode, topic, requirements, check_only):
             results = await gps.discover_golden_paths(demo_tasks, iterations=2)
             console.print(f"Discovered {results['discovered_paths']} golden paths")
     
-    asyncio.run(run())
+    try:
+        asyncio.run(run())
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Interrupted by user[/yellow]")
+        sys.exit(0)
+    except Exception as e:
+        console.print(f"[red]Fatal error: {e}[/red]")
+        import traceback
+        if "--debug" in sys.argv:
+            console.print(traceback.format_exc())
+        sys.exit(1)
 
 
 if __name__ == "__main__":

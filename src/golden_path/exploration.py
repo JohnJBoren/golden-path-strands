@@ -95,7 +95,7 @@ class ExplorationLogger:
         
         if self.successful_paths:
             scores = [path["score"] for path in self.successful_paths]
-            analysis["average_score"] = sum(scores) / len(scores)
+            analysis["average_score"] = sum(scores) / len(scores) if scores else 0
             
             # Analyze common patterns in successful paths
             successful_tasks = [
@@ -120,7 +120,7 @@ class ExplorationLogger:
         
         return analysis
     
-    def export_golden_paths(self, output_file: str = None) -> str:
+    def export_golden_paths(self, output_file: Optional[str] = None) -> str:
         """Export successful paths for training"""
         output_file = output_file or f"golden_paths_{self.current_session}.json"
         
@@ -131,13 +131,37 @@ class ExplorationLogger:
             "statistics": self.analyze_patterns(),
         }
         
-        with open(output_file, 'w') as f:
-            json.dump(export_data, f, indent=2)
+        # Use atomic write with temp file
+        import tempfile
+        import os
+
+        # Use NamedTemporaryFile with delete=False for better file descriptor management
+        temp_dir = os.path.dirname(output_file) or '.'
+        try:
+            with tempfile.NamedTemporaryFile(mode='w', dir=temp_dir, suffix='.tmp',
+                                              delete=False) as temp_file:
+                temp_path = temp_file.name
+                json.dump(export_data, temp_file, indent=2)
+
+            # Atomic move after file is closed
+            os.replace(temp_path, output_file)
+        except Exception as e:
+            # Clean up temp file on error
+            if 'temp_path' in locals() and os.path.exists(temp_path):
+                try:
+                    os.unlink(temp_path)
+                except OSError:
+                    pass  # Ignore errors during cleanup
+            raise
         
         logger.info("golden_paths_exported", file=output_file, count=len(self.successful_paths))
         return output_file
     
     def _write_to_log(self, entry: Dict) -> None:
-        """Write entry to session log file"""
-        with open(self.session_file, 'a') as f:
-            f.write(json.dumps(entry) + '\n')
+        """Write entry to session log file with error handling"""
+        try:
+            with open(self.session_file, 'a') as f:
+                f.write(json.dumps(entry) + '\n')
+                f.flush()  # Ensure immediate write
+        except Exception as e:
+            logger.error(f"Failed to write to session log: {e}", file=self.session_file)
